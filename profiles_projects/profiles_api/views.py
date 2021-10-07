@@ -4,16 +4,19 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
 
 from profiles_api import serializers
 from profiles_api import models
 from profiles_api import permissions
 
+
 class HelloApiView(APIView):
     """Test API View"""
     serializer_class = serializers.HelloSerializer
 
-    def get(self,  request, format=None):
+    def get(self, request, format=None):
         """Returns a list of APIView features"""
         an_apiview = [
             'Uses HTTP methods as function (get, post, patch, put, delete',
@@ -49,9 +52,11 @@ class HelloApiView(APIView):
         """delete an object"""
         return Response({'method': 'DELETE'})
 
+
 class HelloViewSet(viewsets.ViewSet):
     """Test API ViewSet"""
     serializer_class = serializers.HelloSerializer
+
     def list(self, request):
         a_viewset = [
             'Uses actions (list, create, retrieve, update, partial_update',
@@ -91,6 +96,7 @@ class HelloViewSet(viewsets.ViewSet):
         """Handle removing an object"""
         return Response({'http_method': 'DELETE'})
 
+
 class UserProfileViewSet(viewsets.ModelViewSet):
     """Handle creating and updating profiles"""
     serializer_class = serializers.UserProfileSerializer
@@ -99,3 +105,8 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.UpdateOwnProfile,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'email',)
+
+
+class UserLoginApiView(ObtainAuthToken):
+    """Handle creating user authentification tokens"""
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
